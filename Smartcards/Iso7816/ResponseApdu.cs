@@ -7,6 +7,9 @@ namespace Jacarta.Smartcards.Iso7816
     using System;
     using Jacarta.CoreLib;
 
+    /// <summary>
+    /// ISO 7816 Response APDU.
+    /// </summary>
     public class ResponseApdu
     {
         /// <summary>

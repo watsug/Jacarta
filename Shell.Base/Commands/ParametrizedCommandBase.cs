@@ -6,6 +6,9 @@ namespace Jacarta.Shell.Base.Commands
 {
     using Jacarta.Shell.Core;
 
+    /// <summary>
+    /// Base class for all parametrized commands.
+    /// </summary>
     public class ParametrizedCommandBase : IShellCommand
     {
         public void Execute(string parameters)
