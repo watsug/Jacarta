@@ -10,8 +10,4 @@
     <ProjectReference Include="..\Shell.Core\Shell.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
-
 </Project>
