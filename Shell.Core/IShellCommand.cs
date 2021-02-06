@@ -1,5 +1,5 @@
-﻿// <copyright file="IShellCommand.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="IShellCommand.cs" company="augustyn.net">
+// Copyright (c) augustyn.net. All rights reserved.
 // </copyright>
 // <author>Adam Augustyn</author>
 

@@ -1,5 +1,5 @@
-﻿// <copyright file="TerminalCommand.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TerminalCommand.cs" company="augustyn.net">
+// Copyright (c) augustyn.net. All rights reserved.
 // </copyright>
 // <author>Adam Augustyn</author>
 
