@@ -22,18 +22,16 @@ namespace Jacarta.Smartcards.Iso7816
         public const int LessDataRespondedThanRequested = 0x6287;
 
         /// <summary>
-        /// Checking error.
+        /// Checking errors.
         /// </summary>
         public const int WrongLength = 0x6700;
-
         public const int SecurityStatusNotSatisfied = 0x6982;
         public const int AuthenticationMethodBlocked = 0x6983;
-        public const int DataInvalid = 0x6984;
+        public const int DataNotUsable = 0x6984;
         public const int ConditionsOfUseNotSatisfied = 0x6985;
         public const int CommandNotAllowed = 0x6986;
-        public const int EcpectedSmDataObjectsMissing = 0x6987;
-        public const int SmDataObjectsIncorrect = 0x6988;
-
+        public const int ExpectedSmDataObjectsMissing = 0x6987;
+        public const int IncorrectSmDataObjects = 0x6988;
         public const int WrongData = 0x6A80;
         public const int FuncNotSupported = 0x6A81;
         public const int FileNotFond = 0x6A82;
@@ -41,9 +39,7 @@ namespace Jacarta.Smartcards.Iso7816
         public const int NotEnoughMemory = 0x6A84;
         public const int NcInconsistent = 0x6A85;
         public const int IncorrectP1P2 = 0x6A86;
-
         public const int ReferenceNotFound = 0x6A88;
-
         public const int WrongP1P2 = 0x6B00;
         public const int InsNotSupported = 0x6D00;
         public const int ClaNotSupported = 0x6E00;
@@ -60,7 +56,18 @@ namespace Jacarta.Smartcards.Iso7816
             {
                 { Ok, "Ok"},
 
-                // Checking error.
+                // Checking errors.
+                { WrongLength, "Wrong length; no further indication" },
+                { SecurityStatusNotSatisfied, "Security status not satisfied" },
+                { AuthenticationMethodBlocked, "Authentication method blocked" },
+                { DataNotUsable, "Reference data not usable" },
+                { ConditionsOfUseNotSatisfied, "Conditions of use not satisfied" },
+                { CommandNotAllowed, "Command not allowed (no current EF)" },
+                { ExpectedSmDataObjectsMissing, "Expected secure messaging data objects missing" },
+                { IncorrectSmDataObjects, "Incorrect secure messaging data objects" },
+                { WrongData, "Incorrect parameters in the command data field" },
+                { FuncNotSupported, "Function not supported" },
+                { FileNotFond, "File or application not found" },
                 { RecordNotFound, "Record not found" },
                 { NotEnoughMemory, "Not enough memory space in the file" },
                 { NcInconsistent, "Nc inconsistent with TLV structure" },
