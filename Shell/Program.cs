@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shell
+namespace Jacarta.Shell
 {
     class Program
     {
