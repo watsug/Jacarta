@@ -1,4 +1,7 @@
-﻿
+﻿// <copyright file="CommandApdu.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace Jacarta.Smartcards.Iso7816
 {
     using System;

@@ -1,4 +1,8 @@
-﻿namespace Jacarta.CoreLib
+﻿// <copyright file="Util.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace Jacarta.CoreLib
 {
     using System;
 

@@ -1,4 +1,8 @@
-﻿namespace Jacarta.Smartcards.Iso7816
+﻿// <copyright file="SW.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace Jacarta.Smartcards.Iso7816
 {
     public static class SW
     {
