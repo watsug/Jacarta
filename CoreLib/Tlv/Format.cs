@@ -11,6 +11,11 @@ namespace Jacarta.CoreLib.Tlv
     public enum Format
     {
         /// <summary>
+        /// Auto - used mainly for decoding.
+        /// </summary>
+        Auto,
+
+        /// <summary>
         /// Simple TLV
         /// </summary>
         Tlv,
@@ -24,5 +29,10 @@ namespace Jacarta.CoreLib.Tlv
         /// BER (Basic Encoding Rules)
         /// </summary>
         Ber,
+
+        /// <summary>
+        /// BER according to ISO 7816-4 (Basic Encoding Rules)
+        /// </summary>
+        BerIso,
     }
 }
