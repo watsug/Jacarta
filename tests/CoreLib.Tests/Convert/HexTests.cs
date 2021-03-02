@@ -6,31 +6,45 @@
 
 namespace CoreLib.Tests.Convert
 {
+    using System;
     using System.Linq;
     using Jacarta.CoreLib.Convert;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:Elements should be documented", Justification = "This is only test fixture class.")]
     public class HexTests
     {
-        [DataTestMethod]
-        [DataRow("", new byte[] { })]
-        [DataRow("A0", new byte[] { 0xA0 })]
-        [DataRow("1234567890", new byte[] { 0x12, 0x34, 0x56, 0x78, 0x90 })]
-        [DataRow("ABCDEF", new byte[] { 0xAB, 0xCD, 0xEF })]
-        [DataRow("abcdef", new byte[] { 0xAB, 0xCD, 0xEF })]
+        [Test]
+        [TestCase("", new byte[] { })]
+        [TestCase("A0", new byte[] { 0xA0 })]
+        [TestCase("1234567890", new byte[] { 0x12, 0x34, 0x56, 0x78, 0x90 })]
+        [TestCase("ABCDEF", new byte[] { 0xAB, 0xCD, 0xEF })]
+        [TestCase("abcdef", new byte[] { 0xAB, 0xCD, 0xEF })]
         public void PositiveHexDecode(string str, byte[] expected)
         {
             var decoded = Hex.Decode(str);
             Assert.IsTrue(expected.SequenceEqual(decoded));
         }
 
-        [DataTestMethod]
-        [DataRow(new byte[] { }, "")]
-        [DataRow(new byte[] { 0xA0 }, "A0")]
-        [DataRow(new byte[] { 0x12, 0x34, 0x56, 0x78, 0x90 }, "1234567890")]
-        [DataRow(new byte[] { 0xAB, 0xCD, 0xEF }, "ABCDEF")]
+        [Test]
+        [TestCase("1")]
+        [TestCase("A")]
+        [TestCase("123")]
+        [TestCase("ABC")]
+        [TestCase("abc")]
+        [TestCase("ABCG")]
+        [TestCase("abcgef")]
+        public void NegativeHexDecode(string str)
+        {
+            Assert.Throws<ArgumentException>(() => { Hex.Decode(str); });
+        }
+
+        [Test]
+        [TestCase(new byte[] { }, "")]
+        [TestCase(new byte[] { 0xA0 }, "A0")]
+        [TestCase(new byte[] { 0x12, 0x34, 0x56, 0x78, 0x90 }, "1234567890")]
+        [TestCase(new byte[] { 0xAB, 0xCD, 0xEF }, "ABCDEF")]
         public void PositiveHexEncode(byte[] data, string expected)
         {
             var encoded = Hex.Encode(data, 0);

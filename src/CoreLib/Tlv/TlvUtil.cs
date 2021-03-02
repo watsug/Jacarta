@@ -15,6 +15,21 @@ namespace Jacarta.CoreLib.Tlv
     public static class TlvUtil
     {
         /// <summary>
+        /// The most significant bit is set.
+        /// </summary>
+        public const byte Msb = 0x80;
+
+        /// <summary>
+        /// Length field mask for TLV lenght field.
+        /// </summary>
+        public const byte LengthMask = 0x7F;
+
+        /// <summary>
+        /// Mask used to signalize, that TAG is encoded on more than one byte.
+        /// </summary>
+        public const byte ExtendedTagMask = 0x1f;
+
+        /// <summary>
         /// Encode length field according to given format.
         /// </summary>
         /// <param name="s">Output stream.</param>
@@ -44,7 +59,28 @@ namespace Jacarta.CoreLib.Tlv
         /// <returns>Decoded length.</returns>
         public static uint GetLength(Span<byte> buff, int offset, Format format = Format.Auto)
         {
-            throw new NotImplementedException(nameof(GetLength));
+            var b1 = buff[offset];
+            if ((Msb & b1) == 0)
+            {
+                return b1;
+            }
+
+            b1 &= LengthMask;
+
+            if (b1 > sizeof(uint))
+            {
+                throw new ArgumentOutOfRangeException($"TLV length encoded on more than 4 bytes is not supported yet ({b1})!");
+            }
+
+            uint ret = 0;
+            for (int i = 1; i <= b1; i++)
+            {
+                ret <<= 8;
+                ret |= buff[offset + i];
+            }
+
+            // TODO: validate according to format
+            return ret;
         }
 
         /// <summary>
@@ -55,7 +91,24 @@ namespace Jacarta.CoreLib.Tlv
         /// <returns>Length of length field.</returns>
         public static int GetTagLen(Span<byte> buff, int offset)
         {
-            throw new NotImplementedException(nameof(GetTagLen));
+            var b1 = buff[offset];
+            if ((b1 & ExtendedTagMask) != ExtendedTagMask)
+            {
+                return 1;
+            }
+
+            int length = 1;
+            for (int i = 1; i < buff.Length - offset; i++)
+            {
+                var bn = buff[offset + i];
+                length++;
+                if ((bn & Msb) == 0)
+                {
+                    break;
+                }
+            }
+
+            return length;
         }
 
         /// <summary>
