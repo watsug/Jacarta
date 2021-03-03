@@ -6,8 +6,8 @@
 
 namespace Jacarta.Smartcards.Iso7816
 {
-    using System;
     using Jacarta.CoreLib;
+    using System;
 
     /// <summary>
     /// ISO 7816 Response APDU.
@@ -67,7 +67,7 @@ namespace Jacarta.Smartcards.Iso7816
             }
 
             var sw = Util.GetUshort(buff, offest + length - MinLength);
-            var data = Util.GetSubarray(buff, offest, length - MinLength);
+            var data = buff.AsSpan(offest, length - MinLength).ToArray();
 
             return new ResponseApdu(sw, data);
         }

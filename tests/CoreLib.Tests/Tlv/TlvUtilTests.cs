@@ -9,7 +9,6 @@ namespace CoreLib.Tests.Tlv
     using Jacarta.CoreLib.Convert;
     using Jacarta.CoreLib.Tlv;
     using NUnit.Framework;
-    using System;
 
     [TestFixture]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:Elements should be documented", Justification = "This is only test fixture class.")]

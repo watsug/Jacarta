@@ -1,4 +1,4 @@
-﻿// <copyright file="TaggedDataAttribute.cs" company="augustyn.net">
+﻿// <copyright file="TlvDataAttribute.cs" company="augustyn.net">
 // Copyright (c) augustyn.net. All rights reserved.
 // Licensed under GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
 // </copyright>
@@ -11,7 +11,7 @@ namespace Jacarta.CoreLib.Tlv
     /// <summary>
     /// TaggedData attribute used to serialize TLV structures.
     /// </summary>
-    public class TaggedDataAttribute : Attribute
+    public class TlvDataAttribute : Attribute
     {
     }
 }
