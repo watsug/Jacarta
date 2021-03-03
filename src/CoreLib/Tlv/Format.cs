@@ -35,5 +35,15 @@ namespace Jacarta.CoreLib.Tlv
         /// BER according to ISO 7816-4 (Basic Encoding Rules)
         /// </summary>
         BerIso,
+
+        /// <summary>
+        /// Length encoded always on 1 byte
+        /// </summary>
+        OneByteLength,
+
+        /// <summary>
+        /// Length encoded always on 2 bytes
+        /// </summary>
+        TwoBytesLength,
     }
 }

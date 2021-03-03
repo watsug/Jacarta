@@ -35,7 +35,7 @@ namespace Jacarta.CoreLib.Tlv
         /// <param name="s">Output stream.</param>
         /// <param name="length">Length to be encoded.</param>
         /// <param name="format">Encoding format.</param>
-        public static void EncodeLength(Stream s, ulong length, Format format = Format.BerIso)
+        public static void EncodeLength(Stream s, ulong length, Format format = Format.Der)
         {
         }
 
@@ -45,9 +45,10 @@ namespace Jacarta.CoreLib.Tlv
         /// <param name="buff">Input buffer.</param>
         /// <param name="offset">Offset to start.</param>
         /// <returns>Length of length field.</returns>
-        public static int GetLengthFieldLen(Span<byte> buff, int offset)
+        public static int GetLengthFieldLen(ReadOnlySpan<byte> buff, int offset)
         {
-            throw new NotImplementedException(nameof(GetLengthFieldLen));
+            var b1 = buff[offset];
+            return ((Msb & b1) == 0) ? sizeof(byte) : sizeof(byte) + b1 & LengthMask;
         }
 
         /// <summary>
@@ -57,7 +58,7 @@ namespace Jacarta.CoreLib.Tlv
         /// <param name="offset">Offset to start.</param>
         /// <param name="format">Encoding format (default Auto).</param>
         /// <returns>Decoded length.</returns>
-        public static uint GetLength(Span<byte> buff, int offset, Format format = Format.Auto)
+        public static uint GetLength(ReadOnlySpan<byte> buff, int offset, Format format = Format.Auto)
         {
             var b1 = buff[offset];
             if ((Msb & b1) == 0)
@@ -89,7 +90,7 @@ namespace Jacarta.CoreLib.Tlv
         /// <param name="buff">Input buffer.</param>
         /// <param name="offset">Offset to start.</param>
         /// <returns>Length of length field.</returns>
-        public static int GetTagLen(Span<byte> buff, int offset)
+        public static int GetTagLen(ReadOnlySpan<byte> buff, int offset)
         {
             var b1 = buff[offset];
             if ((b1 & ExtendedTagMask) != ExtendedTagMask)
@@ -116,12 +117,24 @@ namespace Jacarta.CoreLib.Tlv
         /// </summary>
         /// <param name="buff">Input buffer.</param>
         /// <param name="offset">Offset to start.</param>
-        /// <param name="format">Encoding format (default Auto).</param>
         /// <returns>Decoded TAG.</returns>
-        public static uint GetTag(Span<byte> buff, int offset, Format format = Format.Auto)
+        public static uint GetTag(ReadOnlySpan<byte> buff, int offset)
         {
-            throw new NotImplementedException(nameof(GetTag));
-        }
+            var len = GetTagLen(buff, offset);
 
+            if (len > sizeof(uint))
+            {
+                throw new ArgumentOutOfRangeException($"TAGs longer than 4 bytes are not supported yet ({len})!");
+            }
+
+            uint ret = 0;
+            for (int i = 0; i < len; i++)
+            {
+                ret <<= 8;
+                ret |= buff[offset + i];
+            }
+
+            return ret;
+        }
     }
 }

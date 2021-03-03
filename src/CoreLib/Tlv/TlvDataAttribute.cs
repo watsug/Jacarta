@@ -11,7 +11,25 @@ namespace Jacarta.CoreLib.Tlv
     /// <summary>
     /// TaggedData attribute used to serialize TLV structures.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1309:Field names should not begin with underscore", Justification = "Readibility")]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class TlvDataAttribute : Attribute
     {
+        private readonly int _index;
+        private readonly uint _tag;
+        private readonly Format _format;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TlvDataAttribute"/> class.
+        /// </summary>
+        /// <param name="index">Index in TLV encoded data.</param>
+        /// <param name="tag">TAG number.</param>
+        /// <param name="format">Format to encode the length.</param>
+        public TlvDataAttribute(int index, uint tag, Format format = Format.Auto)
+        {
+            _index = index;
+            _tag = tag;
+            _format = format;
+        }
     }
 }

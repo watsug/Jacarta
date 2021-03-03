@@ -11,6 +11,7 @@ namespace Jacarta.Smartcards.Iso7816
     /// <summary>
     /// Definitions of typical ISO 7816-4 status words.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1309:Field names should not begin with underscore", Justification = "Better readibility")]
     public static class SW
     {
 #pragma warning disable SA1600 // Elements should be documented

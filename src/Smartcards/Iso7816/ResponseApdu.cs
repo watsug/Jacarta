@@ -6,12 +6,13 @@
 
 namespace Jacarta.Smartcards.Iso7816
 {
-    using Jacarta.CoreLib;
     using System;
+    using Jacarta.CoreLib;
 
     /// <summary>
     /// ISO 7816 Response APDU.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1101:Prefix local calls with this", Justification = "Better readibility")]
     public class ResponseApdu
     {
         /// <summary>
@@ -29,6 +30,7 @@ namespace Jacarta.Smartcards.Iso7816
             SW = sw;
             Data = data;
         }
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResponseApdu"/> class.
@@ -57,7 +59,7 @@ namespace Jacarta.Smartcards.Iso7816
         /// <param name="offest">Offest of R-APDU.</param>
         /// <param name="length">Length of R-PAPDU (or -1 if all bytes till end of buffer).</param>
         /// <returns><see cref="ResponseApdu"/> object.</returns>
-        public static ResponseApdu Factory(byte[] buff, int offest = 0, int length = -1)
+        public static ResponseApdu Factory(ReadOnlySpan<byte> buff, int offest = 0, int length = -1)
         {
             length = length < 0 ? buff.Length - offest : length;
 
@@ -66,8 +68,8 @@ namespace Jacarta.Smartcards.Iso7816
                 throw new ArgumentException($"R-APDU needs to be at least {2}-bytes long!");
             }
 
-            var sw = Util.GetUshort(buff, offest + length - MinLength);
-            var data = buff.AsSpan(offest, length - MinLength).ToArray();
+            var sw = Util.GetUShort(buff, offest + length - MinLength);
+            var data = buff.Slice(offest, length - MinLength).ToArray();
 
             return new ResponseApdu(sw, data);
         }

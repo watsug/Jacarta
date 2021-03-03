@@ -6,6 +6,7 @@
 
 namespace CoreLib.Tests.Tlv
 {
+    using System;
     using Jacarta.CoreLib.Convert;
     using Jacarta.CoreLib.Tlv;
     using NUnit.Framework;
@@ -15,17 +16,31 @@ namespace CoreLib.Tests.Tlv
     public class TlvUtilTests
     {
         [Test]
-        [TestCase("00", 0)]
+        [TestCase("00", 1)]
         [TestCase("01", 1)]
-        [TestCase("7F", 0x7f)]
-        [TestCase("8190", 0x90)]
-        [TestCase("821234", 0x1234)]
-        [TestCase("83123456", 0x123456)]
-        [TestCase("8412345678", 0x12345678)]
-        public void PositiveTlvGetLengthNoValidation(string str, int expected)
+        [TestCase("7F", 1)]
+        [TestCase("8190", 2)]
+        [TestCase("821234", 3)]
+        [TestCase("83123456", 4)]
+        [TestCase("8412345678", 5)]
+        public void PositiveTlvGetLengthFieldLen(string str, int expected)
+        {
+            var decoded = TlvUtil.GetLengthFieldLen(Hex.Decode(str), 0);
+            Assert.AreEqual(expected, decoded);
+        }
+
+        [Test]
+        [TestCase("00", 0U)]
+        [TestCase("01", 1U)]
+        [TestCase("7F", 0x7fU)]
+        [TestCase("8190", 0x90U)]
+        [TestCase("821234", 0x1234U)]
+        [TestCase("83123456", 0x123456U)]
+        [TestCase("8412345678", 0x12345678U)]
+        public void PositiveTlvGetLengthNoValidation(string str, uint expected)
         {
             var decoded = TlvUtil.GetLength(Hex.Decode(str), 0);
-            Assert.AreEqual((uint)expected, decoded);
+            Assert.AreEqual(expected, decoded);
         }
 
         [Test]
@@ -51,6 +66,17 @@ namespace CoreLib.Tests.Tlv
         {
             var tagLen = TlvUtil.GetTagLen(Hex.Decode(str), 0);
             Assert.AreEqual(expectedLen, tagLen);
+        }
+
+        [Test]
+        [TestCase("C0", 0xC0U)]
+        [TestCase("DF70", 0xDF70U)]
+        [TestCase("DF8570", 0xDF8570U)]
+        [TestCase("DF858870", 0xDF858870U)]
+        public void PositiveTlvGetTag(string str, uint expectedTag)
+        {
+            var tag = TlvUtil.GetTag(Hex.Decode(str), 0);
+            Assert.AreEqual(expectedTag, tag);
         }
     }
 }
