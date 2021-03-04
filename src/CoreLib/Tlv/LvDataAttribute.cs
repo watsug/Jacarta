@@ -15,9 +15,6 @@ namespace Jacarta.CoreLib.Tlv
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class LvDataAttribute : Attribute
     {
-        private readonly int _index;
-        private readonly Format _format;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="LvDataAttribute"/> class.
         /// </summary>
@@ -25,8 +22,18 @@ namespace Jacarta.CoreLib.Tlv
         /// <param name="format">Format to encode the length.</param>
         public LvDataAttribute(int index, Format format = Format.Auto)
         {
-            _index = index;
-            _format = format;
+            Index = index;
+            Format = format;
         }
+
+        /// <summary>
+        /// Gets index in TLV structure (starting from 0).
+        /// </summary>
+        private int Index { get; }
+
+        /// <summary>
+        /// Gets format to encode length field.
+        /// </summary>
+        private Format Format { get; }
     }
 }

@@ -30,12 +30,57 @@ namespace Jacarta.CoreLib.Tlv
         public const byte ExtendedTagMask = 0x1f;
 
         /// <summary>
-        /// Encode length field according to given format.
+        /// Mask used to valida if length can be encoded on one byte.
         /// </summary>
-        /// <param name="s">Output stream.</param>
+        public const uint OneByteLengthMask = 0xffffff00;
+
+        /// <summary>
+        /// Mask used to valida if length can be encoded on two bytes.
+        /// </summary>
+        public const uint TwoBytesLengthMask = 0xfff0000;
+
+        /// <summary>
+        /// Returns length field length according to given format.
+        /// </summary>
         /// <param name="length">Length to be encoded.</param>
         /// <param name="format">Encoding format.</param>
-        public static void EncodeLength(Stream s, ulong length, Format format = Format.Der)
+        /// <returns>Predicted size of length field.</returns>
+        public static int PredictLengthLength(ulong length, Format format = Format.Der)
+        {
+            if (format == Format.OneByteLength)
+            {
+                if ((length & OneByteLengthMask) != 0)
+                {
+                    throw new ArgumentOutOfRangeException($"This length cannot be encoded on one byte: {length:X}h");
+                }
+
+                return 1;
+            }
+
+            if (format == Format.TwoBytesLength)
+            {
+                if ((length & TwoBytesLengthMask) != 0)
+                {
+                    throw new ArgumentOutOfRangeException($"This length cannot be encoded on one byte: {length:X}h");
+                }
+
+                return 2;
+            }
+
+            return length < 0x80
+                ? 1
+                : length <= 0xffff
+                    ? 2
+                    : length <= 0xffffff ? 3 : 4;
+        }
+
+        /// <summary>
+        /// Encode length field according to given format.
+        /// </summary>
+        /// <param name="stream">Output stream.</param>
+        /// <param name="length">Length to be encoded.</param>
+        /// <param name="format">Encoding format.</param>
+        public static void EncodeLength(Stream stream, ulong length, Format format = Format.Der)
         {
         }
 

@@ -13,12 +13,8 @@ namespace Jacarta.CoreLib.Tlv
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1309:Field names should not begin with underscore", Justification = "Readibility")]
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class TlvDataAttribute : Attribute
+    public class TlvDataAttribute : LvDataAttribute
     {
-        private readonly int _index;
-        private readonly uint _tag;
-        private readonly Format _format;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TlvDataAttribute"/> class.
         /// </summary>
@@ -26,10 +22,14 @@ namespace Jacarta.CoreLib.Tlv
         /// <param name="tag">TAG number.</param>
         /// <param name="format">Format to encode the length.</param>
         public TlvDataAttribute(int index, uint tag, Format format = Format.Auto)
+            : base(index, format)
         {
-            _index = index;
-            _tag = tag;
-            _format = format;
+            Tag = tag;
         }
+
+        /// <summary>
+        /// Gets format to encode length field.
+        /// </summary>
+        private uint Tag { get; }
     }
 }
