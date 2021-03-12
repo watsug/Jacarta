@@ -32,12 +32,17 @@ namespace Jacarta.CoreLib.Tlv
         /// <summary>
         /// Mask used to valida if length can be encoded on one byte.
         /// </summary>
-        public const uint OneByteLengthMask = 0xffffff00;
+        public const uint OneByteLengthMask = 0xFFFFFF00;
 
         /// <summary>
         /// Mask used to valida if length can be encoded on two bytes.
         /// </summary>
-        public const uint TwoBytesLengthMask = 0xfff0000;
+        public const uint TwoBytesLengthMask = 0xFFFF0000;
+
+        /// <summary>
+        /// Mask used to valida if length can be encoded on three bytes.
+        /// </summary>
+        public const uint ThreeBytesLengthMask = 0xFF000000;
 
         /// <summary>
         /// Returns length field length according to given format.
@@ -69,9 +74,11 @@ namespace Jacarta.CoreLib.Tlv
 
             return length < 0x80
                 ? 1
-                : length <= 0xffff
+                : length <= 0xff
                     ? 2
-                    : length <= 0xffffff ? 3 : 4;
+                    : length <= 0xffff
+                        ? 3
+                        : length <= 0xffffff ? 4 : 5;
         }
 
         /// <summary>
@@ -82,6 +89,47 @@ namespace Jacarta.CoreLib.Tlv
         /// <param name="format">Encoding format.</param>
         public static void EncodeLength(Stream stream, ulong length, Format format = Format.Der)
         {
+            var buffLen = PredictLengthLength(length, format);
+            Span<byte> buff = stackalloc byte[buffLen];
+
+            if (format == Format.OneByteLength || length < 0x80)
+            {
+                buff[0] = (byte)length;
+            }
+            else if (format == Format.TwoBytesLength)
+            {
+                buff[0] = (byte)(length >> 8);
+                buff[1] = (byte)(length & 0xff);
+            }
+            else if ((length & OneByteLengthMask) == 0)
+            {
+                // length < 0x80 is already addressed in the first condition
+                buff[0] = Msb | 0x01;
+                buff[1] = (byte)(length & 0xff);
+            }
+            else if ((length & TwoBytesLengthMask) == 0)
+            {
+                buff[0] = Msb | 0x02;
+                buff[1] = (byte)(length >> 8);
+                buff[2] = (byte)(length & 0xff);
+            }
+            else if ((length & ThreeBytesLengthMask) == 0)
+            {
+                buff[0] = Msb | 0x03;
+                buff[1] = (byte)(length >> 16);
+                buff[2] = (byte)((length >> 8) & 0xff);
+                buff[3] = (byte)(length & 0xff);
+            }
+            else
+            {
+                buff[0] = Msb | 0x04;
+                buff[1] = (byte)(length >> 24);
+                buff[2] = (byte)((length >> 16) & 0xff);
+                buff[3] = (byte)((length >> 8) & 0xff);
+                buff[4] = (byte)(length & 0xff);
+            }
+
+            stream.Write(buff);
         }
 
         /// <summary>

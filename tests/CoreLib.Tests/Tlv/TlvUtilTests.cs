@@ -15,7 +15,29 @@ namespace CoreLib.Tests.Tlv
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:Elements should be documented", Justification = "This is only test fixture class.")]
     public class TlvUtilTests
     {
-        [Test]
+        [TestCase(0x0000007FU, Format.OneByteLength, 1)]
+        [TestCase(0x000000FFU, Format.OneByteLength, 1)]
+        [TestCase(0x00007FFFU, Format.TwoBytesLength, 2)]
+        [TestCase(0x0000FFFFU, Format.TwoBytesLength, 2)]
+        [TestCase(0x0000007FU, Format.Auto, 1)]
+        [TestCase(0x00000080U, Format.Auto, 2)]
+        [TestCase(0x000000FFU, Format.Auto, 2)]
+        [TestCase(0x000001FFU, Format.Auto, 3)]
+        [TestCase(0x00007FFFU, Format.Auto, 3)]
+        [TestCase(0x0000FFFFU, Format.Auto, 3)]
+        [TestCase(0x0001FFFFU, Format.Auto, 4)]
+        [TestCase(0x007FFFFFU, Format.Auto, 4)]
+        [TestCase(0x007FFFFFU, Format.Auto, 4)]
+        [TestCase(0x00FFFFFFU, Format.Auto, 4)]
+        [TestCase(0x01FFFFFFU, Format.Auto, 5)]
+        [TestCase(0x7FFFFFFFU, Format.Auto, 5)]
+        [TestCase(0xFFFFFFFFU, Format.Auto, 5)]
+        public void PositivePredictLengthLength(uint length, Format format, int expected)
+        {
+            var predictedLen = TlvUtil.PredictLengthLength(length, format);
+            Assert.AreEqual(expected, predictedLen);
+        }
+
         [TestCase("00", 1)]
         [TestCase("01", 1)]
         [TestCase("7F", 1)]
@@ -29,7 +51,6 @@ namespace CoreLib.Tests.Tlv
             Assert.AreEqual(expected, decoded);
         }
 
-        [Test]
         [TestCase("00", 0U)]
         [TestCase("01", 1U)]
         [TestCase("7F", 0x7fU)]
@@ -43,14 +64,12 @@ namespace CoreLib.Tests.Tlv
             Assert.AreEqual(expected, decoded);
         }
 
-        [Test]
         [TestCase("")]
         public void NegativeTlvGetLengthNoValidationIndexOutOfRange(string str)
         {
             Assert.Throws<IndexOutOfRangeException>(() => { TlvUtil.GetLength(Hex.Decode(str), 0); });
         }
 
-        [Test]
         [TestCase("85")]
         [TestCase("FF")]
         public void NegativeTlvGetLengthNoValidation(string str)
@@ -58,7 +77,6 @@ namespace CoreLib.Tests.Tlv
             Assert.Throws<ArgumentOutOfRangeException>(() => { TlvUtil.GetLength(Hex.Decode(str), 0); });
         }
 
-        [Test]
         [TestCase("C0", 1)]
         [TestCase("DF70", 2)]
         [TestCase("DF8570", 3)]
@@ -68,7 +86,6 @@ namespace CoreLib.Tests.Tlv
             Assert.AreEqual(expectedLen, tagLen);
         }
 
-        [Test]
         [TestCase("C0", 0xC0U)]
         [TestCase("DF70", 0xDF70U)]
         [TestCase("DF8570", 0xDF8570U)]
