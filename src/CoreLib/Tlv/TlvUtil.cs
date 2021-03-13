@@ -82,54 +82,78 @@ namespace Jacarta.CoreLib.Tlv
         }
 
         /// <summary>
-        /// Encode length field according to given format.
+        /// Encode length field according to given format and writes it to the stream.
         /// </summary>
         /// <param name="stream">Output stream.</param>
         /// <param name="length">Length to be encoded.</param>
         /// <param name="format">Encoding format.</param>
-        public static void EncodeLength(Stream stream, ulong length, Format format = Format.Der)
+        public static void EncodeLengthToStream(Stream stream, ulong length, Format format = Format.Der)
         {
             var buffLen = PredictLengthLength(length, format);
             Span<byte> buff = stackalloc byte[buffLen];
+            EncodeLength(buff, 0, length, format);
+            stream.Write(buff);
+        }
 
+        /// <summary>
+        /// Encode length field according to given format.
+        /// </summary>
+        /// <param name="length">Length to be encoded.</param>
+        /// <param name="format">Encoding format.</param>
+        /// <returns>Encoded length as byte array.</returns>
+        public static byte[] EncodeLength(ulong length, Format format = Format.Der)
+        {
+            var buffLen = PredictLengthLength(length, format);
+            Span<byte> buff = stackalloc byte[buffLen];
+            EncodeLength(buff, 0, length, format);
+            return buff.ToArray();
+        }
+
+        /// <summary>
+        /// Encode length field according to given format and writes it to the stream.
+        /// </summary>
+        /// <param name="buff">Buffer to render length field.</param>
+        /// <param name="offset">Offset in the buffer where length is encoded.</param>
+        /// <param name="length">Length to be encoded.</param>
+        /// <param name="format">Encoding format.</param>
+        public static void EncodeLength(Span<byte> buff, int offset, ulong length, Format format)
+        {
             if (format == Format.OneByteLength || length < 0x80)
             {
-                buff[0] = (byte)length;
+                buff[offset] = (byte)length;
             }
             else if (format == Format.TwoBytesLength)
             {
-                buff[0] = (byte)(length >> 8);
-                buff[1] = (byte)(length & 0xff);
+                buff[offset++] = (byte)(length >> 8);
+                buff[offset] = (byte)(length & 0xff);
             }
             else if ((length & OneByteLengthMask) == 0)
             {
                 // length < 0x80 is already addressed in the first condition
-                buff[0] = Msb | 0x01;
-                buff[1] = (byte)(length & 0xff);
+                buff[offset++] = Msb | 0x01;
+                buff[offset] = (byte)(length & 0xff);
             }
             else if ((length & TwoBytesLengthMask) == 0)
             {
-                buff[0] = Msb | 0x02;
-                buff[1] = (byte)(length >> 8);
-                buff[2] = (byte)(length & 0xff);
+                buff[offset++] = Msb | 0x02;
+                buff[offset++] = (byte)(length >> 8);
+                buff[offset] = (byte)(length & 0xff);
             }
             else if ((length & ThreeBytesLengthMask) == 0)
             {
-                buff[0] = Msb | 0x03;
-                buff[1] = (byte)(length >> 16);
-                buff[2] = (byte)((length >> 8) & 0xff);
-                buff[3] = (byte)(length & 0xff);
+                buff[offset++] = Msb | 0x03;
+                buff[offset++] = (byte)(length >> 16);
+                buff[offset++] = (byte)((length >> 8) & 0xff);
+                buff[offset] = (byte)(length & 0xff);
             }
             else
             {
-                buff[0] = Msb | 0x04;
-                buff[1] = (byte)(length >> 24);
-                buff[2] = (byte)((length >> 16) & 0xff);
-                buff[3] = (byte)((length >> 8) & 0xff);
-                buff[4] = (byte)(length & 0xff);
+                buff[offset++] = Msb | 0x04;
+                buff[offset++] = (byte)(length >> 24);
+                buff[offset++] = (byte)((length >> 16) & 0xff);
+                buff[offset++] = (byte)((length >> 8) & 0xff);
+                buff[offset] = (byte)(length & 0xff);
             }
-
-            stream.Write(buff);
         }
 
         /// <summary>

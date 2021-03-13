@@ -27,7 +27,6 @@ namespace CoreLib.Tests.Tlv
         [TestCase(0x0000FFFFU, Format.Auto, 3)]
         [TestCase(0x0001FFFFU, Format.Auto, 4)]
         [TestCase(0x007FFFFFU, Format.Auto, 4)]
-        [TestCase(0x007FFFFFU, Format.Auto, 4)]
         [TestCase(0x00FFFFFFU, Format.Auto, 4)]
         [TestCase(0x01FFFFFFU, Format.Auto, 5)]
         [TestCase(0x7FFFFFFFU, Format.Auto, 5)]
@@ -36,6 +35,28 @@ namespace CoreLib.Tests.Tlv
         {
             var predictedLen = TlvUtil.PredictLengthLength(length, format);
             Assert.AreEqual(expected, predictedLen);
+        }
+
+        [TestCase(0x0000007FU, Format.OneByteLength, "7F")]
+        [TestCase(0x000000FFU, Format.OneByteLength, "FF")]
+        [TestCase(0x00007FFFU, Format.TwoBytesLength, "7FFF")]
+        [TestCase(0x0000FFFFU, Format.TwoBytesLength, "FFFF")]
+        [TestCase(0x0000007FU, Format.Auto, "7F")]
+        [TestCase(0x00000080U, Format.Auto, "8180")]
+        [TestCase(0x000000FFU, Format.Auto, "81FF")]
+        [TestCase(0x000001FFU, Format.Auto, "8201FF")]
+        [TestCase(0x00007FFFU, Format.Auto, "827FFF")]
+        [TestCase(0x0000FFFFU, Format.Auto, "82FFFF")]
+        [TestCase(0x0001FFFFU, Format.Auto, "8301FFFF")]
+        [TestCase(0x007FFFFFU, Format.Auto, "837FFFFF")]
+        [TestCase(0x00FFFFFFU, Format.Auto, "83FFFFFF")]
+        [TestCase(0x01FFFFFFU, Format.Auto, "8401FFFFFF")]
+        [TestCase(0x7FFFFFFFU, Format.Auto, "847FFFFFFF")]
+        [TestCase(0xFFFFFFFFU, Format.Auto, "84FFFFFFFF")]
+        public void PositiveEncodeLength(uint length, Format format, string expected)
+        {
+            var encoded = Hex.Encode(TlvUtil.EncodeLength(length, format), 0);
+            Assert.IsTrue(string.Compare(expected, encoded, true) == 0);
         }
 
         [TestCase("00", 1)]
