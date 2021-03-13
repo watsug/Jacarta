@@ -41,12 +41,12 @@ namespace Jacarta.CoreLib.Tlv
         /// <returns>Object encoded as byte array.</returns>
         public override byte[] Encode(Format format = Format.Auto)
         {
-            // TODO: predict TAG length
+            var tagLength = TlvUtil.PredictTagLength(Tag);
             var lenLength = TlvUtil.PredictLengthLength((ulong)Data.Length, format);
-            var buff = new byte[1 + lenLength + Data.Length];
-            buff[0] = (byte)Tag;
-            TlvUtil.EncodeLength(buff, 1, (ulong)Data.Length, format);
-            Array.Copy(Data, 0, buff, lenLength + 1, Data.Length);
+            var buff = new byte[tagLength + lenLength + Data.Length];
+            TlvUtil.EncodeTag(buff, 0, Tag);
+            TlvUtil.EncodeLength(buff, tagLength, (ulong)Data.Length, format);
+            Array.Copy(Data, 0, buff, tagLength + lenLength, Data.Length);
             return buff;
         }
     }

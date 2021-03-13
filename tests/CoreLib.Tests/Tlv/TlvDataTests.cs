@@ -15,6 +15,7 @@ namespace CoreLib.Tests.Tlv
     public class TlvDataTests
     {
         [TestCase(0xC0U, "1234", Format.Der, "C0021234")]
+        [TestCase(0xDF70U, "1234", Format.Der, "DF70021234")]
         public void PositiveEncodeLength(uint tag, string data, Format format, string expected)
         {
             var encoded = Hex.Encode(new TlvData(tag, Hex.Decode(data)).Encode(format), 0);

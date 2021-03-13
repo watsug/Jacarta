@@ -37,13 +37,13 @@ namespace Jacarta.CoreLib.Tlv
         BerIso,
 
         /// <summary>
-        /// Length encoded always on 1 byte
+        /// Encoded always on one byte
         /// </summary>
-        OneByteLength,
+        OneByte,
 
         /// <summary>
-        /// Length encoded always on 2 bytes
+        /// Encoded always on two bytes
         /// </summary>
-        TwoBytesLength,
+        TwoBytes,
     }
 }

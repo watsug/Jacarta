@@ -52,7 +52,7 @@ namespace Jacarta.CoreLib.Tlv
         /// <returns>Predicted size of length field.</returns>
         public static int PredictLengthLength(ulong length, Format format = Format.Der)
         {
-            if (format == Format.OneByteLength)
+            if (format == Format.OneByte)
             {
                 if ((length & OneByteLengthMask) != 0)
                 {
@@ -62,7 +62,7 @@ namespace Jacarta.CoreLib.Tlv
                 return 1;
             }
 
-            if (format == Format.TwoBytesLength)
+            if (format == Format.TwoBytes)
             {
                 if ((length & TwoBytesLengthMask) != 0)
                 {
@@ -110,7 +110,7 @@ namespace Jacarta.CoreLib.Tlv
         }
 
         /// <summary>
-        /// Encode length field according to given format and writes it to the stream.
+        /// Encode length field according to given format and writes it to the buffer.
         /// </summary>
         /// <param name="buff">Buffer to render length field.</param>
         /// <param name="offset">Offset in the buffer where length is encoded.</param>
@@ -118,11 +118,11 @@ namespace Jacarta.CoreLib.Tlv
         /// <param name="format">Encoding format.</param>
         public static void EncodeLength(Span<byte> buff, int offset, ulong length, Format format)
         {
-            if (format == Format.OneByteLength || length < 0x80)
+            if (format == Format.OneByte || length < 0x80)
             {
                 buff[offset] = (byte)length;
             }
-            else if (format == Format.TwoBytesLength)
+            else if (format == Format.TwoBytes)
             {
                 buff[offset++] = (byte)(length >> 8);
                 buff[offset] = (byte)(length & 0xff);
@@ -252,6 +252,96 @@ namespace Jacarta.CoreLib.Tlv
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// Encode TAG field according to given format.
+        /// </summary>
+        /// <param name="tag">TAG to be encoded.</param>
+        /// <param name="format">Encoding format.</param>
+        /// <returns>TAG encoded as byte array.</returns>
+        public static byte[] EncodeTag(ulong tag, Format format = Format.Auto)
+        {
+            var length = PredictTagLength(tag, format);
+            var buff = new byte[length];
+            EncodeTag(buff, 0, tag, format);
+            return buff;
+        }
+
+        /// <summary>
+        /// Encode TAG field according to given format and writes it to the buffer.
+        /// </summary>
+        /// <param name="buff">Buffer to render length field.</param>
+        /// <param name="offset">Offset in the buffer where length is encoded.</param>
+        /// <param name="tag">TAG to be encoded.</param>
+        /// <param name="format">Encoding format.</param>
+        public static void EncodeTag(Span<byte> buff, int offset, ulong tag, Format format = Format.Auto)
+        {
+            if (format == Format.OneByte)
+            {
+                buff[offset] = (byte)tag;
+                return;
+            }
+
+            if (format == Format.TwoBytes)
+            {
+                buff[offset++] = (byte)((tag >> 8) & 0xFF);
+                buff[offset] = (byte)(tag & 0xFF);
+                return;
+            }
+
+            if ((tag & ThreeBytesLengthMask) != 0)
+            {
+                buff[offset++] = (byte)((tag >> 24) & 0xFF);
+            }
+
+            if ((tag & TwoBytesLengthMask) != 0)
+            {
+                buff[offset++] = (byte)((tag >> 16) & 0xFF);
+            }
+
+            if ((tag & OneByteLengthMask) != 0)
+            {
+                buff[offset++] = (byte)((tag >> 8) & 0xFF);
+            }
+
+            buff[offset] = (byte)(tag & 0xFF);
+        }
+
+        /// <summary>
+        /// Returns TAG field length according to given format. Tag value is not validated
+        /// according to DER/BER/... rules.
+        /// </summary>
+        /// <param name="tag">TAG to be encoded.</param>
+        /// <param name="format">Encoding format.</param>
+        /// <returns>Predicted size of length field.</returns>
+        public static int PredictTagLength(ulong tag, Format format = Format.Auto)
+        {
+            if (format == Format.OneByte)
+            {
+                if ((tag & OneByteLengthMask) != 0)
+                {
+                    throw new ArgumentOutOfRangeException($"This TAG cannot be encoded on one byte: {tag:X}h");
+                }
+
+                return 1;
+            }
+
+            if (format == Format.TwoBytes)
+            {
+                if ((tag & TwoBytesLengthMask) != 0)
+                {
+                    throw new ArgumentOutOfRangeException($"This TAG cannot be encoded on one byte: {tag:X}h");
+                }
+
+                return 2;
+            }
+
+            return (tag & OneByteLengthMask) == 0
+                ? 1
+                : (tag & TwoBytesLengthMask) == 0
+                    ? 2
+                    : (tag & ThreeBytesLengthMask) == 0 ? 3 : 4;
         }
     }
 }
