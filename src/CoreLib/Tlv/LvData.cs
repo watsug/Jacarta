@@ -1,4 +1,4 @@
-﻿// <copyright file="TlvData.cs" company="augustyn.net">
+﻿// <copyright file="LvData.cs" company="augustyn.net">
 // Copyright (c) augustyn.net. All rights reserved.
 // Licensed under GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
 // </copyright>
@@ -11,23 +11,17 @@ namespace Jacarta.CoreLib.Tlv
     /// <summary>
     /// TLV data object.
     /// </summary>
-    public class TlvData : ITaggedObject
+    public class LvData : IEncodableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TlvData"/> class.
+        /// Initializes a new instance of the <see cref="LvData"/> class.
         /// </summary>
         /// <param name="tag">Tag.</param>
         /// <param name="data">Data.</param>
-        public TlvData(uint tag, byte[] data)
+        public LvData(byte[] data)
         {
-            Tag = tag;
             Data = data;
         }
-
-        /// <summary>
-        /// Gets tag of data object.
-        /// </summary>
-        public uint Tag { get; }
 
         /// <summary>
         /// Gets value of data object.
@@ -41,14 +35,12 @@ namespace Jacarta.CoreLib.Tlv
         /// <returns>Object encoded as byte array.</returns>
         public byte[] Encode(Format format = Format.Auto)
         {
-            var tagLength = TlvUtil.PredictTagLength(Tag);
             var lenLength = TlvUtil.PredictLengthLength((ulong)Data.Length, format);
 
-            var buff = new byte[tagLength + lenLength + Data.Length];
+            var buff = new byte[lenLength + Data.Length];
 
-            TlvUtil.EncodeTag(buff, 0, Tag);
-            TlvUtil.EncodeLength(buff, tagLength, (ulong)Data.Length, format);
-            Data.AsSpan().CopyTo(buff.AsSpan(tagLength + lenLength));
+            TlvUtil.EncodeLength(buff, 0, (ulong)Data.Length, format);
+            Data.AsSpan().CopyTo(buff.AsSpan(lenLength));
 
             return buff;
         }

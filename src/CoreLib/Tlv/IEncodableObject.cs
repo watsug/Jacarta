@@ -1,4 +1,4 @@
-﻿// <copyright file="TlvObject.cs" company="augustyn.net">
+﻿// <copyright file="IEncodableObject.cs" company="augustyn.net">
 // Copyright (c) augustyn.net. All rights reserved.
 // Licensed under GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
 // </copyright>
@@ -7,15 +7,10 @@
 namespace Jacarta.CoreLib.Tlv
 {
     /// <summary>
-    /// Base class for TLV objects.
+    /// Base interface for TLV/LV encodable objects.
     /// </summary>
-    public abstract class TlvObject
+    public interface IEncodableObject
     {
-        /// <summary>
-        /// Gets tag of data object.
-        /// </summary>
-        public abstract uint Tag { get; }
-
         /// <summary>
         /// Encodes the object int byte array.
         /// </summary>
