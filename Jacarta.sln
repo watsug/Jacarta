@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreLib.Tests", "tests\Core
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D404A884-66D9-4252-8DC2-E8F52EFCDA72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smartcards.Tests", "tests\Smartcards.Tests\Smartcards.Tests.csproj", "{30BEF2DE-CDC3-4CEE-A6F0-20E880F2F446}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smartcards.Tests", "tests\Smartcards.Tests\Smartcards.Tests.csproj", "{30BEF2DE-CDC3-4CEE-A6F0-20E880F2F446}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jupyter", "Jupyter\Jupyter.csproj", "{C1706D85-A637-4CD2-B74E-40DC836F4C20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{30BEF2DE-CDC3-4CEE-A6F0-20E880F2F446}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30BEF2DE-CDC3-4CEE-A6F0-20E880F2F446}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30BEF2DE-CDC3-4CEE-A6F0-20E880F2F446}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1706D85-A637-4CD2-B74E-40DC836F4C20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1706D85-A637-4CD2-B74E-40DC836F4C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1706D85-A637-4CD2-B74E-40DC836F4C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1706D85-A637-4CD2-B74E-40DC836F4C20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +81,7 @@ Global
 		{1396DAB3-7F52-4B72-87A7-CD01236A2366} = {5182EEB4-8CB0-459C-89C2-5F17310FA189}
 		{0D4FDDCC-4C19-49D2-8273-10C09861E9DC} = {7551E0ED-0B83-45CD-A6F9-4891C47AE236}
 		{30BEF2DE-CDC3-4CEE-A6F0-20E880F2F446} = {7551E0ED-0B83-45CD-A6F9-4891C47AE236}
+		{C1706D85-A637-4CD2-B74E-40DC836F4C20} = {5182EEB4-8CB0-459C-89C2-5F17310FA189}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {10769AAF-DAAD-4036-914F-0DAC69B3D3AA}
